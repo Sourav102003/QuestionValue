@@ -26,14 +26,24 @@ const getall = async(req,res)=>{
 
 }
 const getsubjectByexam = (req, res) => {
-    const examInput = req.body.exam; 
-    paperModel.distinct('subject', { exam:examInput })
-        .then((years) => {
+    const examInput = req.body.exam;
+    paperModel.find({ exam: examInput }, { subject: 1, image: 1, _id: 0 })
+        .then((papers) => {
+            // Deduplicate by subject
+            const seen = new Set();
+            const subjectsWithImages = papers.filter(paper => {
+                if (seen.has(paper.subject)) return false;
+                seen.add(paper.subject);
+                return true;
+            }).map(paper => ({
+                subject: paper.subject,
+                image: paper.image
+            }));
             res.send({
                 status: 200,
                 success: true,
-                message: "Distinct years for department CSE and input year fetched successfully",
-                data: years
+                message: "Distinct subjects with images fetched successfully for the given exam",
+                data: subjectsWithImages
             });
         })
         .catch((err) => {
@@ -41,8 +51,9 @@ const getsubjectByexam = (req, res) => {
             res.send({
                 status: 500,
                 success: false,
-                message: "Failed to fetch years"
+                message: "Failed to fetch subjects with images"
             });
         });
 };
+
 module.exports ={getall,getsubjectByexam}

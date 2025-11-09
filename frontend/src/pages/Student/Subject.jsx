@@ -1,84 +1,72 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-// Helper to build actual file URL from subject name
-function getFileUrl(subject) {
-  // If all files are PDFs, update the extension to .pdf
-  return `https://res.cloudinary.com/example/${subject}.pdf`;
-  // Or if files have different extensions, manage accordingly.
-  // In real use, you should have subject={name, url} and return subject.url;
-}
 
 export default function Subjects() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const params = useParams();
 
   useEffect(() => {
-    const data = { exam: params.id };
+    const requestData = { exam: params.id };
+    setLoading(true);
     axios
       .post(
         "http://localhost:5000/apis/subject/getsubjectByexam",
-        data,
+        requestData,
         { headers: { authorization: sessionStorage.getItem("token") } }
       )
       .then((res) => {
         setData(res?.data?.data || []);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
       });
-  }, [params.id]); // make sure to update on id change
+  }, [params.id]);
 
- const downloadSubjectFile = async (subject) => {
-  try {
-    const fileUrl = getFileUrl(subject);
-    const response = await axios.post(
-      "http://localhost:5000/apis/paper/download",
-      { url: fileUrl },
-      {
-        responseType: "blob",
-        headers: { authorization: sessionStorage.getItem("token") }
+  const downloadSubjectFile = async (imageUrl, subjectName) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/apis/paper/download",
+        { url: imageUrl },
+        {
+          responseType: "blob",
+          headers: { authorization: sessionStorage.getItem("token") },
+        }
+      );
+
+      const contentType = response.headers["content-type"];
+      if (contentType && contentType.includes("application/json")) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          alert("Download failed: " + reader.result);
+        };
+        reader.readAsText(response.data);
+        return;
       }
-    );
-console.log(fileUrl);
 
-    const contentType = response.headers["content-type"];
-    // If backend returns JSON error, don't download!
-    if (contentType && contentType.includes("application/json")) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        alert("Download failed: " + reader.result);
-      };
-      reader.readAsText(response.data);
-      return;
+      let fileExtension = "";
+      if (contentType.includes("pdf")) fileExtension = "pdf";
+      else if (contentType.includes("jpeg")) fileExtension = "jpg";
+      else if (contentType.includes("png")) fileExtension = "png";
+
+      const blob = new Blob([response.data], { type: contentType });
+      const fileName = fileExtension ? `${subjectName}.${fileExtension}` : subjectName;
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed", err);
+      alert("Download failed: " + err.message);
     }
-
-    let fileExtension = "";
-    if (contentType.includes("pdf")) fileExtension = "pdf";
-    else if (contentType.includes("jpeg")) fileExtension = "jpg";
-    else if (contentType.includes("png")) fileExtension = "png";
-
-    const blob = new Blob([response.data], { type: contentType });
-    const fileName = fileExtension ? `${subject}.${fileExtension}` : subject;
-
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error("Download failed", err);
-    alert("Download failed: " + err.message);
-  }
-};
-
+  };
 
   return (
     <section id="hero" className="hero section">
@@ -97,12 +85,12 @@ console.log(fileUrl);
                 ) : data.length === 0 ? (
                   <div className="subjects-none">No subjects found for this term.</div>
                 ) : (
-                  data.map((subject) => (
+                  data.map(({ subject, image }) => (
                     <div
                       key={subject}
                       className="term-block"
                       style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
-                      onClick={() => downloadSubjectFile(subject)}
+                      onClick={() => downloadSubjectFile(image, subject)}
                     >
                       {subject}
                     </div>
