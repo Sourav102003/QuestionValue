@@ -1,0 +1,49 @@
+const mongoose =require("mongoose");
+const paperModel = require("../paper/paperModel")
+const subjectModel = require("../subject/subjectModel")
+
+
+
+const getall = async(req,res)=>{
+            var totalsubjects = await subjectModel.countDocuments()
+            console.log("total subjects",totalsubjects);
+            
+            subjectModel.find(req.body)        
+            .then((subjectdata)=>{
+                res.send({
+                    status:200,
+                    success:true,
+                    messsage:"Data loaded!!",
+                    data:subjectdata
+                })
+            })
+            .catch((err)=>{
+                res.send({
+                    status:500,
+                    success:false,
+                    messsage:"Something went wrong!!"
+                })
+            })
+
+}
+const gettermByYears = (req, res) => {
+    const yearInput = req.body.year; 
+    paperModel.distinct('term', { year:yearInput })
+        .then((years) => {
+            res.send({
+                status: 200,
+                success: true,
+                message: "Distinct years for department CSE and input year fetched successfully",
+                data: years
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.send({
+                status: 500,
+                success: false,
+                message: "Failed to fetch years"
+            });
+        });
+};
+module.exports ={gettermByYears,getall}
