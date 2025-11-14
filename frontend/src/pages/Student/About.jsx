@@ -16,7 +16,7 @@ export default function About()
               
             >
               <i className="bi bi-star-fill" />
-              <span>Award Winning Agency</span>
+              <span>Previous Year Question </span>
             </div>
             <h1 className="hero-title" >
               Transforming Ideas Into Digital Reality

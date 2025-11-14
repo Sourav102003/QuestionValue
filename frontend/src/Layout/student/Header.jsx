@@ -21,7 +21,7 @@ export default function Header()
           <a href="/">About</a>
         </li>
         <li>
-          <a href="#features">Features</a>
+          <a href="/admin/ChatBoat">ChatBot</a>
         </li>
         <li>
           <a href="#services">Services</a>

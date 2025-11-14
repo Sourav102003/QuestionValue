@@ -18,6 +18,7 @@ import DashBoard from './pages/AdminSide/DashBoard';
 import StudentTable from './pages/AdminSide/StudentManage';
 import EnquiryManage from './pages/AdminSide/EnquiryManage';
 import UploadPaper from './pages/AdminSide/UploadPaper';
+import ChatBoat from './pages/Student/ChatBoat';
 
 
 
@@ -43,10 +44,11 @@ function App() {
           </Route>
           <Route path='admin' element={<Adminmaster/>}>
 
-<Route path='DashBoard' element={<DashBoard/>}/>
-<Route path='studentTable' element={<StudentTable/>}/>
-<Route path='EnquiryManage' element={<EnquiryManage/>}/>
-<Route path='UploadPaper' element={<UploadPaper/>}/>
+            <Route path='DashBoard' element={<DashBoard/>}/>
+            <Route path='studentTable' element={<StudentTable/>}/>
+            <Route path='EnquiryManage' element={<EnquiryManage/>}/>
+            <Route path='UploadPaper' element={<UploadPaper/>}/>
+            <Route path='ChatBoat' element={<ChatBoat/>}/>
 
           </Route>
           

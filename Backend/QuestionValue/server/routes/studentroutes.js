@@ -13,9 +13,11 @@ const termController = require("../apis/term/termController")
 const examController = require("../apis/exam/examController")
 const subjectController = require("../apis/subject/subjectController")
 const semesterController = require("../apis/semester/semesterController")
+const dashboardController = require("../apis/dashboard/dashboardController")
+// const generateResponse =require("../apis/chatboat/generateResponse")
 
-
-
+// routes.post("/api",generateResponse.generateResponse)
+routes.post("/dashboard",dashboardController.dashboard)
 routes.post("/user/login",userController.Login)
 routes.post("/student/register",studentController.register)
 routes.post("/student/getall",studentController.getall)

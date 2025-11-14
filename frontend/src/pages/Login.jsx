@@ -34,8 +34,13 @@ export default function LoginCard() {
 
           if (res.data.data.userType === 3) {
             setTimeout(() => nav("/"), 2000);
-          }
-        } else {
+          } 
+          if (res.data.data.userType === 1) {
+            setTimeout(() => nav("/admin/DashBoard"), 2000);
+          } 
+          
+        } 
+        else {
           toast.error(res?.data?.message);
         }
       })
