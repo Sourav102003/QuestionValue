@@ -1,40 +1,46 @@
-// const dotenv = require("dotenv");
-// dotenv.config();
+const { GoogleGenAI } = require("@google/genai");
 
-// const { GoogleGenerativeAI } = require("@google/generative-ai");
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY || "YOUR_API_KEY",
+});
 
-// // ✅ Initialize Gemini API client with key from .env
-// const genAI = new GoogleGenerativeAI({
-//   apiKey: process.env.GEMINI_API_KEY,
-// });
+const askGemini = async (req, res) => {
+  try {
+    const prompt = req.body.prompt;
 
-// const generateResponse = async (req, res) => {
-//   try {
-//     const prompt = req.body.prompt || "Hello from Gemini API!";
+    if (!prompt) {
+      return res.status(400).send({
+        status: 400,
+        success: false,
+        message: "Prompt is required!"
+      });
+    }
 
-//     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-//     const result = await model.generateContent(prompt);
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
 
-//     const responseText = result.response.text();
+    const reply =
+      response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response returned";
 
-//     console.log("Gemini Response:", responseText);
+    res.send({
+      status: 200,
+      success: true,
+      message: "Response generated successfully!",
+      reply
+    });
 
-//     res.status(200).send({
-//       status: 200,
-//       success: true,
-//       message: "AI response generated successfully",
-//       data: responseText,
-//     });
-//   } catch (error) {
-//     console.error("Gemini API Error:", error);
-//     res.status(500).send({
-//       status: 500,
-//       success: false,
-//       message: "Error generating AI response",
-//       error: error.message,
-//     });
-//   }
-// };
+  } catch (err) {
+    console.log("Gemini API Error:", err);
+    res.status(500).send({
+      status: 500,
+      success: false,
+      message: "Something went wrong",
+      error: err.message
+    });
+  }
+};
 
-// // ✅ Export function for routes
-// module.exports = { generateResponse };
+module.exports = { askGemini };

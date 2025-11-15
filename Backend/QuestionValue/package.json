@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/genai": "^1.29.1",
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
@@ -22,6 +23,7 @@
     "mongoose": "^8.18.2",
     "multer": "^2.0.2",
     "nodemon": "^3.1.10",
+    "react-chatbotify": "^2.4.1",
     "socket.io": "^4.8.1"
   }
 }

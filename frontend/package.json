@@ -12,6 +12,7 @@
     "install": "^0.13.0",
     "npm": "^11.6.2",
     "react": "^19.2.0",
+    "react-chatbotify": "^2.4.1",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
