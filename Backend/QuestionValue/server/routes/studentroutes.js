@@ -14,6 +14,7 @@ const examController = require("../apis/exam/examController")
 const subjectController = require("../apis/subject/subjectController")
 const semesterController = require("../apis/semester/semesterController")
 const dashboardController = require("../apis/dashboard/dashboardController")
+const libraryController = require("../apis/Library/libraryController")
 const generateResponse =require("../apis/chatboat/generateResponse")
 
 routes.post("/ask",generateResponse.askGemini)
@@ -21,6 +22,13 @@ routes.post("/dashboard",dashboardController.dashboard)
 routes.post("/user/login",userController.Login)
 routes.post("/student/register",studentController.register)
 routes.post("/student/getall",studentController.getall)
+
+
+routes.post("/library/add",upload.single("image"),libraryController.add)
+routes.post("/library/getall",libraryController.getall)
+routes.post("/library/getallDepartment",libraryController.getallDepartment)
+routes.post("/library/getLibraryByDepartment",libraryController.getLibraryByDepartment)
+routes.post("/library/download",libraryController.download)
 
 routes.post("/enquiry/add",enquiryController.add)
 routes.post("/enquiry/getSingle",enquiryController.getSingle)

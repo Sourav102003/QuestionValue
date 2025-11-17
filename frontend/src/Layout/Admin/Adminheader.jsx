@@ -24,7 +24,23 @@ export default function Adminheader()
           <a href="/admin/EnquiryManage">EnquiryManage</a>
         </li>
         <li>
-         <a href="/admin/UploadPaper">Upload Paper</a>
+          <a href="/admin/UploadPaper">Upload Paper</a>
+        </li>
+        
+        <li className="dropdown">
+          <a href="/admin/UploadBook">
+            <span>Upload Book</span>{" "}
+            <i className="bi bi-chevron-down toggle-dropdown" />
+          </a>
+          <ul>
+            <li>
+              <a href="AddBook">Add Book</a>
+            </li>
+            <li className="dropdown">
+            
+            </li>
+            
+          </ul>
         </li>
         
         
